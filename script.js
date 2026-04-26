@@ -63,19 +63,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const span = document.createElement("span");
         span.classList.add("floating-sticker");
         span.innerText = stickers[Math.floor(Math.random() * stickers.length)];
-        
+
         // Random positioning
         const x = Math.random() * 100;
         const y = Math.random() * 100;
-        
+
         span.style.left = `${x}vw`;
         span.style.top = `${y}vh`;
-        
+
         // Random sizes and animation delays (Slightly smaller, slower floating)
         const size = Math.random() * 2 + 1.2; // 1.2rem to 3.2rem
         const delay = Math.random() * 10;
         const duration = Math.random() * 10 + 10; // 10s to 20s for elegant drifting
-        
+
         span.style.fontSize = `${size}rem`;
         span.style.animationDuration = `${duration}s`;
         span.style.animationDelay = `${delay}s`;
@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
     audio.addEventListener('timeupdate', () => {
         seekBar.value = audio.currentTime;
         currentTimeDisplay.innerText = formatTime(audio.currentTime);
-        
+
         // Dynamic background fill for seek bar
         const value = (seekBar.value / seekBar.max) * 100;
         seekBar.style.background = `linear-gradient(to right, #d1495b ${value}%, rgba(0,0,0,0.15) ${value}%)`;
@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
     wrapper.addEventListener('scroll', () => {
         const scrolled = wrapper.scrollTop;
         const floatingStickers = document.querySelectorAll('.floating-sticker');
-        
+
         floatingStickers.forEach((sticker, index) => {
             const speed = (index % 5) + 1;
             sticker.style.transform = `translateY(${scrolled * speed * 0.1}px)`;
@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Add glowing heart particles to celestial glow in tribute section
     const celestialGlow = document.querySelector('.celestial-glow');
     if (celestialGlow) {
-        for(let i=0; i<10; i++) {
+        for (let i = 0; i < 10; i++) {
             const heart = document.createElement('span');
             heart.innerText = '💖';
             heart.style.position = 'absolute';
@@ -173,12 +173,12 @@ document.addEventListener("DOMContentLoaded", () => {
             heart.style.opacity = '0';
             heart.style.animation = `floatAnimation ${Math.random() * 3 + 3}s ease-in-out infinite alternate`;
             heart.style.animationDelay = `${Math.random() * 2}s`;
-            
+
             // Add a simple fade-in/out to these specific hearts
             setInterval(() => {
                 heart.style.opacity = Math.random() > 0.5 ? '0.6' : '0.1';
             }, 2000 + Math.random() * 2000);
-            
+
             celestialGlow.appendChild(heart);
         }
     }

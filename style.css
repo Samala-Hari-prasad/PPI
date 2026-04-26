@@ -299,26 +299,28 @@ body {
 
 .album-art-container {
     position: relative;
-    width: 450px;
+    width: 320px;
     height: 320px;
     display: flex;
     align-items: center;
     flex-shrink: 0;
+    margin-right: 100px;
 }
 
 .album-art {
     position: relative;
-    width: 400px;
+    width: 320px;
     height: 320px;
-    object-fit: contain;
+    object-fit: cover;
     border-radius: 12px;
     z-index: 2;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    background: #fff;
 }
 
 .vinyl-record {
     position: absolute;
-    right: 50px;
+    left: 100px; /* Stays permanently peeking out, no sliding */
     width: 280px;
     height: 280px;
     background: repeating-radial-gradient(#111, #111 4px, #1a1a1a 5px, #1a1a1a 6px);
@@ -330,16 +332,15 @@ body {
     animation: spin 4s linear infinite;
     animation-play-state: paused;
     z-index: 1;
-    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .vinyl-record.playing {
     animation-play-state: running;
-    transform: translateX(140px);
+    box-shadow: 0 0 40px 15px rgba(209, 73, 91, 0.4), 0 5px 20px rgba(0,0,0,0.4); /* Magical glow effect */
 }
 
 @keyframes spin {
-    100% { transform: translateX(140px) rotate(360deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .record-center {
