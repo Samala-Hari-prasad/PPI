@@ -157,15 +157,19 @@
                     </div>
                 </div>
                 <div class="music-info">
-                    <h3>Saradaga Kasepaina</h3>
-                    <p class="artist">From Paagal</p>
-                    <div class="lyrics-container">
+                    <h3 id="song-title">Saradaga Kasepaina</h3>
+                    <p class="artist" id="song-artist">From Paagal</p>
+                    <div class="lyrics-container" id="song-lyrics">
                         <p class="lyric-line">"Saradaga kaasepina</p>
                         <p class="lyric-line">Sarijodai neetho unna</p>
                         <p class="lyric-line highlight-lyric">Saripodhaa nakee janmaki"</p>
                     </div>
                     <div class="controls">
-                        <button class="btn-play">▶ Play our song</button>
+                        <div class="playback-buttons">
+                            <button class="btn-prev" aria-label="Previous">⏮</button>
+                            <button class="btn-play">▶ Play</button>
+                            <button class="btn-next" aria-label="Next">⏭</button>
+                        </div>
                         <div class="audio-timeline">
                             <span id="current-time">0:00</span>
                             <input type="range" id="seek-bar" value="0" min="0" step="1">

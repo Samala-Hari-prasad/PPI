@@ -85,68 +85,140 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Music Player Logic
     const playBtn = document.querySelector(".btn-play");
+    const prevBtn = document.querySelector(".btn-prev");
+    const nextBtn = document.querySelector(".btn-next");
     const record = document.querySelector(".vinyl-record");
     const audio = document.getElementById('bg-audio');
     const seekBar = document.getElementById('seek-bar');
     const currentTimeDisplay = document.getElementById('current-time');
     const durationDisplay = document.getElementById('duration');
-    let isPlaying = false;
     
-    const START_TIME = 213; // 3:33
-    const END_TIME = 275;   // 4:35
+    const songTitle = document.getElementById('song-title');
+    const songArtist = document.getElementById('song-artist');
+    const songLyrics = document.getElementById('song-lyrics');
+    
+    let isPlaying = false;
+    let currentSongIndex = 0;
+
+    const playlist = [
+        {
+            title: "Saradaga Kasepaina",
+            artist: "From Paagal",
+            src: "music/Saradaga Kasepaina.mp3",
+            startTime: 213, // 3:33
+            endTime: 275,   // 4:35
+            lyricsHTML: `
+                <p class="lyric-line">"Saradaga kaasepina</p>
+                <p class="lyric-line">Sarijodai neetho unna</p>
+                <p class="lyric-line highlight-lyric">Saripodhaa nakee janmaki"</p>
+            `
+        },
+        {
+            title: "Tum Ho",
+            artist: "Rockstar",
+            src: "music/tum ho.mp3",
+            startTime: 0,
+            endTime: null,
+            lyricsHTML: `
+                <p class="lyric-line">"Tum ho paas mere</p>
+                <p class="lyric-line">Saath mere ho tum yoon</p>
+                <p class="lyric-line">Jitna mehsoos karoon tumko</p>
+                <p class="lyric-line highlight-lyric">Utna hi paa bhi loon"</p>
+            `
+        }
+    ];
+
+    function loadSong(index) {
+        const song = playlist[index];
+        songTitle.innerText = song.title;
+        songArtist.innerText = song.artist;
+        songLyrics.innerHTML = song.lyricsHTML;
+        audio.src = song.src;
+        audio.load();
+    }
 
     playBtn.addEventListener("click", () => {
         isPlaying = !isPlaying;
+        updatePlayState();
+    });
+
+    function updatePlayState() {
         if (isPlaying) {
-            playBtn.innerText = "⏸ Pause our song";
+            playBtn.innerText = "⏸ Pause";
             record.classList.add("playing");
-            if (audio.currentTime < START_TIME || audio.currentTime >= END_TIME) {
-                audio.currentTime = START_TIME;
+            const song = playlist[currentSongIndex];
+            if (audio.currentTime < song.startTime || (song.endTime && audio.currentTime >= song.endTime)) {
+                audio.currentTime = song.startTime;
             }
-            audio.play();
+            audio.play().catch(e => console.log("Audio play failed:", e));
         } else {
-            playBtn.innerText = "▶ Play our song";
+            playBtn.innerText = "▶ Play";
             record.classList.remove("playing");
             audio.pause();
         }
+    }
+
+    prevBtn.addEventListener("click", () => {
+        currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
+        loadSong(currentSongIndex);
+        if (isPlaying) updatePlayState();
+    });
+
+    nextBtn.addEventListener("click", () => {
+        currentSongIndex = (currentSongIndex + 1) % playlist.length;
+        loadSong(currentSongIndex);
+        if (isPlaying) updatePlayState();
     });
 
     const formatTime = (time) => {
-        if (isNaN(time)) return "0:00";
+        if (isNaN(time) || !isFinite(time)) return "0:00";
         const minutes = Math.floor(time / 60);
         const seconds = Math.floor(time % 60);
         return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     };
 
     audio.addEventListener('loadedmetadata', () => {
-        seekBar.min = START_TIME;
-        seekBar.max = END_TIME;
-        durationDisplay.innerText = formatTime(END_TIME - START_TIME);
+        const song = playlist[currentSongIndex];
+        const endTime = song.endTime || audio.duration;
+        seekBar.min = song.startTime;
+        seekBar.max = endTime;
+        durationDisplay.innerText = formatTime(endTime - song.startTime);
+        if (isPlaying) {
+            audio.currentTime = song.startTime;
+            audio.play().catch(e => console.log(e));
+        }
     });
 
     audio.addEventListener('timeupdate', () => {
-        if (audio.currentTime >= END_TIME) {
-            audio.currentTime = START_TIME;
+        const song = playlist[currentSongIndex];
+        const endTime = song.endTime || audio.duration;
+
+        if (endTime && audio.currentTime >= endTime) {
+            audio.currentTime = song.startTime;
             if (!isPlaying) {
                 audio.pause();
             }
-        } else if (audio.currentTime < START_TIME && audio.currentTime > 0) {
-            audio.currentTime = START_TIME;
+        } else if (audio.currentTime < song.startTime && audio.currentTime > 0) {
+            audio.currentTime = song.startTime;
         }
 
         seekBar.value = audio.currentTime;
-        let displayTime = audio.currentTime - START_TIME;
+        let displayTime = audio.currentTime - song.startTime;
         if (displayTime < 0) displayTime = 0;
         currentTimeDisplay.innerText = formatTime(displayTime);
 
         // Dynamic background fill for seek bar
-        const value = ((audio.currentTime - START_TIME) / (END_TIME - START_TIME)) * 100;
+        const duration = endTime - song.startTime;
+        const value = duration > 0 ? ((audio.currentTime - song.startTime) / duration) * 100 : 0;
         seekBar.style.background = `linear-gradient(to right, #d1495b ${Math.max(0, Math.min(100, value))}%, rgba(0,0,0,0.15) ${Math.max(0, Math.min(100, value))}%)`;
     });
 
     seekBar.addEventListener('input', () => {
         audio.currentTime = seekBar.value;
     });
+
+    // Initialize first song metadata without playing
+    loadSong(currentSongIndex);
 
     // Parallax effect on scroll for stickers
     const wrapper = document.querySelector('.parallax-wrapper');
