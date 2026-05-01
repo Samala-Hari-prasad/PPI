@@ -91,12 +91,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const currentTimeDisplay = document.getElementById('current-time');
     const durationDisplay = document.getElementById('duration');
     let isPlaying = false;
+    
+    const START_TIME = 213; // 3:33
+    const END_TIME = 275;   // 4:35
 
     playBtn.addEventListener("click", () => {
         isPlaying = !isPlaying;
         if (isPlaying) {
             playBtn.innerText = "⏸ Pause our song";
             record.classList.add("playing");
+            if (audio.currentTime < START_TIME || audio.currentTime >= END_TIME) {
+                audio.currentTime = START_TIME;
+            }
             audio.play();
         } else {
             playBtn.innerText = "▶ Play our song";
@@ -113,17 +119,29 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     audio.addEventListener('loadedmetadata', () => {
-        seekBar.max = audio.duration;
-        durationDisplay.innerText = formatTime(audio.duration);
+        seekBar.min = START_TIME;
+        seekBar.max = END_TIME;
+        durationDisplay.innerText = formatTime(END_TIME - START_TIME);
     });
 
     audio.addEventListener('timeupdate', () => {
+        if (audio.currentTime >= END_TIME) {
+            audio.currentTime = START_TIME;
+            if (!isPlaying) {
+                audio.pause();
+            }
+        } else if (audio.currentTime < START_TIME && audio.currentTime > 0) {
+            audio.currentTime = START_TIME;
+        }
+
         seekBar.value = audio.currentTime;
-        currentTimeDisplay.innerText = formatTime(audio.currentTime);
+        let displayTime = audio.currentTime - START_TIME;
+        if (displayTime < 0) displayTime = 0;
+        currentTimeDisplay.innerText = formatTime(displayTime);
 
         // Dynamic background fill for seek bar
-        const value = (seekBar.value / seekBar.max) * 100;
-        seekBar.style.background = `linear-gradient(to right, #d1495b ${value}%, rgba(0,0,0,0.15) ${value}%)`;
+        const value = ((audio.currentTime - START_TIME) / (END_TIME - START_TIME)) * 100;
+        seekBar.style.background = `linear-gradient(to right, #d1495b ${Math.max(0, Math.min(100, value))}%, rgba(0,0,0,0.15) ${Math.max(0, Math.min(100, value))}%)`;
     });
 
     seekBar.addEventListener('input', () => {
