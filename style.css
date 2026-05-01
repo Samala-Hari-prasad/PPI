@@ -53,15 +53,19 @@ body {
 
 .floating-sticker {
     position: absolute;
-    font-size: 2.5rem;
     filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1));
-    animation: floatAnimation 8s ease-in-out infinite alternate;
-    opacity: 0.8;
+    opacity: 0;
+    animation: popFadeFloat 15s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
 }
 
-@keyframes floatAnimation {
-    0% { transform: translateY(0) rotate(0deg); }
-    100% { transform: translateY(-30px) rotate(10deg); }
+@keyframes popFadeFloat {
+    0% { transform: translateY(20px) scale(0) rotate(-10deg); opacity: 0; }
+    10% { transform: translateY(0px) scale(1.2) rotate(10deg); opacity: 1; }
+    15% { transform: translateY(-10px) scale(1) rotate(5deg); opacity: 0.8; }
+    85% { transform: translateY(-80px) scale(1) rotate(-5deg); opacity: 0.8; }
+    100% { transform: translateY(-100px) scale(0) rotate(10deg); opacity: 0; }
 }
 
 .parallax-wrapper {
@@ -560,10 +564,32 @@ body {
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
-    .title { font-size: 2.5rem; }
-    .highlight { font-size: 3.5rem; }
-    .music-player { flex-direction: column; text-align: center; }
+    .section { padding: 1.5rem; }
+    .glass-card { padding: 2rem 1.5rem; }
+    .title { font-size: 2.2rem; }
+    .highlight { font-size: 2.8rem; }
+    
+    .music-player { flex-direction: column; text-align: center; gap: 4rem; }
+    .album-art-container { 
+        margin-right: 0; 
+        width: 220px; 
+        height: 220px; 
+        margin: 0 auto; 
+    }
+    .vinyl-record { 
+        width: 200px; 
+        height: 200px; 
+        left: 0; right: 0; margin: 0 auto;
+        top: -70px;
+    }
+    
     .lyrics-container { border-left: none; border-top: 4px solid var(--gold); }
-    .polaroid-gallery { flex-direction: column; align-items: center; }
-    .polaroid { transform: rotate(0) !important; margin-bottom: 1rem; }
+    .playback-buttons { justify-content: center; }
+    
+    .polaroid-gallery { flex-direction: column; align-items: center; gap: 1.5rem; }
+    .polaroid { transform: rotate(0) !important; margin-bottom: 0; width: 100%; max-width: 280px; }
+    
+    .tribute-card { padding: 1.5rem; }
+    .cinematic-text { font-size: 1.8rem; }
+    .handwritten-quote { font-size: 2.2rem; line-height: 1.3; padding: 0; }
 }
