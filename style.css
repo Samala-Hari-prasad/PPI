@@ -231,6 +231,10 @@ body {
     transform: rotate(-4deg) translateY(-5px);
 }
 
+.polaroid:nth-child(8) {
+    transform: rotate(3deg) translateY(12px);
+}
+
 .polaroid:hover {
     transform: scale(1.05) rotate(0deg);
     z-index: 10;
