@@ -340,6 +340,36 @@ body {
     animation: spin 4s linear infinite;
     animation-play-state: paused;
     z-index: 1;
+    overflow: hidden; /* Ensure shine stays within bounds */
+}
+
+.vinyl-record::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(
+        transparent, 
+        rgba(255, 255, 255, 0.1) 10%, 
+        rgba(255, 255, 255, 0.3) 25%, 
+        rgba(255, 255, 255, 0.1) 40%, 
+        transparent 50%
+    );
+    z-index: 2;
+    pointer-events: none;
+    animation: shine-rotate 8s linear infinite;
+    animation-play-state: paused;
+}
+
+.vinyl-record.playing::before {
+    animation-play-state: running;
+}
+
+@keyframes shine-rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .vinyl-record.playing {
@@ -348,7 +378,7 @@ body {
 }
 
 @keyframes spin {
-    100% { transform: rotate(360deg); }
+    100% { transform: rotate(-360deg); }
 }
 
 .record-center {
